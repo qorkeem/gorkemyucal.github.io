@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Görkem Yücal | Bilgisayar Mühendisliği</title>
+    <meta name="description"
+        content="Görkem Yücal - Bilgisayar Mühendisliği 1. Sınıf Öğrencisi. Kişisel portfolyo ve iletişim sayfası.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ========== RESET & BASE ========== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0d0d0d;
+            --green: #00ff41;
+            --green-dim: #00cc33;
+            --green-glow: rgba(0, 255, 65, 0.4);
+            --green-subtle: rgba(0, 255, 65, 0.08);
+            --green-border: rgba(0, 255, 65, 0.15);
+            --text-dim: rgba(0, 255, 65, 0.6);
+            --font-mono: 'Fira Code', 'Courier New', Consolas, monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--green);
+            font-family: var(--font-mono);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ========== MATRIX RAIN CANVAS ========== */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.06;
+            pointer-events: none;
+        }
+
+        /* ========== SCANLINE OVERLAY ========== */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.08) 2px,
+                    rgba(0, 0, 0, 0.08) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 28px 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--green-border);
+            position: relative;
+        }
+
+        .header::before {
+            content: '// portfolio.exe';
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+            letter-spacing: 2px;
+        }
+
+        .avatar-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 28px;
+            position: relative;
+            box-shadow: 0 0 20px var(--green-glow), inset 0 0 20px rgba(0, 255, 65, 0.05);
+            animation: pulse-ring 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--green-glow), inset 0 0 20px rgba(0, 255, 65, 0.05);
+            }
+
+            50% {
+                box-shadow: 0 0 35px var(--green-glow), inset 0 0 25px rgba(0, 255, 65, 0.1);
+            }
+        }
+
+        .avatar-ring .initials {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--green);
+            text-shadow: 0 0 12px var(--green-glow);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 20px var(--green-glow);
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        .subtitle .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.1em;
+            background: var(--green);
+            margin-left: 4px;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* ========== SECTIONS ========== */
+        .section {
+            margin-bottom: 50px;
+            padding: 28px;
+            background: var(--green-subtle);
+            border: 1px solid var(--green-border);
+            border-radius: 6px;
+            position: relative;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            border-color: rgba(0, 255, 65, 0.3);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.05);
+        }
+
+        .section-label {
+            position: absolute;
+            top: -11px;
+            left: 20px;
+            background: var(--bg);
+            padding: 0 10px;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 .prompt {
+            color: var(--green-dim);
+            font-weight: 400;
+        }
+
+        .section p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        .section p+p {
+            margin-top: 14px;
+        }
+
+        /* ========== CODE COMMENT STYLE ========== */
+        .code-comment {
+            color: rgba(0, 255, 65, 0.35);
+            font-size: 0.78rem;
+            margin-bottom: 14px;
+            font-style: italic;
+        }
+
+        /* ========== INTEREST LIST ========== */
+        .interest-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .interest-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            font-size: 0.88rem;
+            color: var(--green);
+            border-left: 2px solid var(--green-border);
+            transition: all 0.3s ease;
+            cursor: default;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .interest-list li::before {
+            content: '>';
+            color: var(--green-dim);
+            font-weight: 700;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            left: -18px;
+        }
+
+        .interest-list li:hover {
+            background: rgba(0, 255, 65, 0.06);
+            border-left-color: var(--green);
+            padding-left: 24px;
+            text-shadow: 0 0 6px var(--green-glow);
+        }
+
+        .interest-list li:hover::before {
+            opacity: 1;
+        }
+
+        .interest-list li i {
+            width: 20px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--green);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .interest-list li:hover i {
+            opacity: 1;
+        }
+
+        /* ========== SOCIAL BUTTONS ========== */
+        .social-buttons {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .social-btn {
+            flex: 1 1 0;
+            min-width: 140px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border: 1px solid var(--green-border);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--green);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            text-decoration: none;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(0, 255, 65, 0.08),
+                    transparent);
+            transition: left 0.5s ease;
+        }
+
+        .social-btn:hover::before {
+            left: 100%;
+        }
+
+        .social-btn:hover {
+            border-color: var(--green);
+            box-shadow: 0 0 20px var(--green-glow), inset 0 0 20px rgba(0, 255, 65, 0.05);
+            text-shadow: 0 0 8px var(--green-glow);
+            transform: translateY(-2px);
+        }
+
+        .social-btn:active {
+            transform: translateY(0);
+        }
+
+        .social-btn i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--green-border);
+            font-size: 0.75rem;
+            color: rgba(0, 255, 65, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .footer .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse-dot 2s ease-in-out infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 4px var(--green-glow);
+            }
+
+            50% {
+                opacity: 0.4;
+                box-shadow: none;
+            }
+        }
+
+        /* ========== FADE-IN ANIMATION ========== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .fade-in:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .fade-in:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .fade-in:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .fade-in:nth-child(4) {
+            animation-delay: 0.55s;
+        }
+
+        .fade-in:nth-child(5) {
+            animation-delay: 0.7s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 18px 60px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.82rem;
+            }
+
+            .avatar-ring {
+                width: 96px;
+                height: 96px;
+            }
+
+            .avatar-ring .initials {
+                font-size: 1.9rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .section h2 {
+                font-size: 1.05rem;
+            }
+
+            .section p {
+                font-size: 0.82rem;
+            }
+
+            .interest-list li {
+                font-size: 0.82rem;
+                padding: 10px 14px;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+
+            .social-btn {
+                padding: 12px 18px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header fade-in">
+            <div class="avatar-ring">
+                <span class="initials">GY</span>
+            </div>
+            <h1>Merhaba, Ben Görkem Yücal</h1>
+            <p class="subtitle">&gt; Bilgisayar Mühendisliği Öğrencisi | 1. Sınıf<span class="cursor"></span></p>
+        </header>
+
+        <!-- ===== ABOUT ME ===== -->
+        <section class="section fade-in">
+            <span class="section-label">/* hakkımda */</span>
+            <h2><span class="prompt">$</span> Hakkımda</h2>
+            <p class="code-comment">// yolculuk yeni başlıyor...</p>
+            <p>
+                Bilgisayar Mühendisliği alanında henüz yolun başındayım. Teknolojiye duyduğum merak ve öğrenme tutkum
+                beni bu alana yönlendirdi. Her gün yeni bir şey keşfetmenin heyecanını yaşıyorum ve bu süreçte kendimi
+                sürekli geliştirmeye odaklanıyorum.
+            </p>
+            <p>
+                Şu an temel programlama dilleri, algoritma mantığı ve problem çözme becerileri üzerinde çalışıyorum.
+                Henüz büyük projelerim olmasa da, sağlam bir temel oluşturmak için sabırla ilerliyorum. Amacım; yazılım
+                dünyasında iz bırakan, üretken bir mühendis olmak.
+            </p>
+        </section>
+
+        <!-- ===== INTERESTS ===== -->
+        <section class="section fade-in">
+            <span class="section-label">/* ilgi alanları */</span>
+            <h2><span class="prompt">$</span> Gelişim &amp; İlgi Alanları</h2>
+            <p class="code-comment">// şu anda üzerinde çalıştığım konular</p>
+            <ul class="interest-list">
+                <li><i class="fa-solid fa-code"></i> C / C++</li>
+                <li><i class="fa-brands fa-python"></i> Python</li>
+                <li><i class="fa-solid fa-shield-halved"></i> Siber Güvenlik</li>
+                <li><i class="fa-brands fa-google"></i> Google Teknolojileri</li>
+                <li><i class="fa-solid fa-brain"></i> Yapay Zeka ve Veri Bilimi</li>
+                <li><i class="fa-solid fa-mobile-screen-button"></i> Mobil Uygulama Geliştirme</li>
+            </ul>
+        </section>
+
+        <!-- ===== SOCIAL LINKS ===== -->
+        <section class="section fade-in">
+            <span class="section-label">/* iletişim */</span>
+            <h2><span class="prompt">$</span> Bana Ulaşın</h2>
+            <p class="code-comment">// bağlantılar & iletişim kanalları</p>
+            <div class="social-buttons">
+                <a href="https://github.com/qorkeem" target="_blank" rel="noopener noreferrer" class="social-btn">
+                    <i class="fa-brands fa-github"></i> GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/g%C3%B6rkemy%C3%BCcal/" target="_blank" rel="noopener noreferrer"
+                    class="social-btn">
+                    <i class="fa-brands fa-linkedin"></i> LinkedIn
+                </a>
+                <a href="mailto:gyucal07@gmail.com" class="social-btn">
+                    <i class="fa-solid fa-envelope"></i> E-Posta Gönder
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer fade-in">
+            <p><span class="status-dot"></span> sistem aktif — 2026</p>
+            <p style="margin-top: 6px;">Görkem Yücal © Tüm hakları saklıdır.</p>
+        </footer>
+
+    </div>
+
+    <!-- ===== MATRIX RAIN SCRIPT ===== -->
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(13, 13, 13, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            columns = Math.floor(canvas.width / fontSize);
+            drops = Array(columns).fill(1);
+        });
+    </script>
+
+</body>
+
+</html>
